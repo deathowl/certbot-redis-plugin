@@ -24,8 +24,8 @@ class Authenticator(common.Plugin):
     def __init__(self, *args, **kwargs):
         super(Authenticator, self).__init__(*args, **kwargs)
         self._httpd = None
-        redis_url = RedisUrlParser(self.conf('redis-url'))
-        self.redis_client = Redis(host=redis_url.hostname, port=redis_url.port, db=0, password=redis_url.password)
+        self.redis_url = RedisUrlParser(self.conf('redis-url'))
+        self.redis_client = Redis(host=self.redis_url.hostname, port=self.redis_url.port, db=0, password=self.redis_url.password)
 
 
     def prepare(self):  # pylint: disable=missing-docstring,no-self-use
@@ -40,7 +40,7 @@ class Authenticator(common.Plugin):
 
     def _get_key(self, achall):   # pylint: disable=missing-docstring
         key = achall.chall.path[1:].split("/")[2]
-        return key
+        return self.redis_url.key + '.' + str(key)
 
     def perform(self, achalls):  # pylint: disable=missing-docstring
         responses = []
