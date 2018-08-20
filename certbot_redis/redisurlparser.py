@@ -12,6 +12,7 @@ class RedisUrlParser:
         self._hostname = url.hostname
         self._port = url.port
         self._password = url.password
+        self._key = url.path
 
 
     @property
@@ -27,3 +28,7 @@ class RedisUrlParser:
     @property
     def password(self):
         return self._password
+
+    @property
+    def key(self):
+        return self._key
