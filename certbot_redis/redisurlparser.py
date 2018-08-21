@@ -12,7 +12,7 @@ class RedisUrlParser:
         self._hostname = url.hostname
         self._port = url.port
         self._password = url.password
-        self._key = url.path
+        self._key = url.path.strip('/')
 
 
     @property
