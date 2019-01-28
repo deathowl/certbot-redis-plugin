@@ -53,7 +53,7 @@ class Authenticator(common.Plugin):
         # then run simple http verification
         response, validation = achall.response_and_validation()
 
-        self.redis_client.set(self._get_key(achall), validation)
+        self.redis_client.setex(self._get_key(achall), 60, validation)
         if response.simple_verify(
                 achall.chall, achall.domain,
                 achall.account_key.public_key(), self.config.http01_port):
