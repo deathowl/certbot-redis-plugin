@@ -24,7 +24,7 @@ class Authenticator(common.Plugin):
     def __init__(self, *args, **kwargs):
         super(Authenticator, self).__init__(*args, **kwargs)
         self._httpd = None
-        self.redis_client = Redis.form_url(self.conf('redis-url'))
+        self.redis_client = Redis.from_url(self.conf('redis-url'), socket_keepalive=True)
 
     def prepare(self):  # pylint: disable=missing-docstring,no-self-use
         pass  # pragma: no cover
