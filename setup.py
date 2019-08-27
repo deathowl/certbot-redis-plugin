@@ -8,7 +8,7 @@ here = path.abspath(path.dirname(__file__))
 
 setup(
     name='certbot-redis',  # Required
-    version='0.1.5',  # Required
+    version='0.1.6',  # Required
     description='Certbot plugin for Redis',
     url='https://github.com/deathowl/certbot-redis-plugin',  # Optional
 
