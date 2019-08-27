@@ -1,5 +1,9 @@
 # Certbot-Redis
 Certbot plugin for Redis
+![travis](https://travis-ci.org/deathowl/certbot-redis-plugin.svg?branch=master "Build status")
+
+
+
 
 Installation guide:
 * Install [Redis](https://redis.io/)
