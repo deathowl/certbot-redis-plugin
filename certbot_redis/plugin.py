@@ -5,16 +5,15 @@ import zope.interface
 from acme import challenges
 from certbot import interfaces
 from certbot.plugins import common
-from redis import Redis
+from redis import StrictRedis
 from .redisurlparser import RedisUrlParser
 
 
 logger = logging.getLogger(__name__)
 
-
+@zope.interface.implementer(interfaces.IAuthenticator)
+@zope.interface.provider(interfaces.IPluginFactory)
 class Authenticator(common.Plugin):
-    zope.interface.implements(interfaces.IAuthenticator)
-    zope.interface.classProvides(interfaces.IPluginFactory)
 
     description = "Redis Authenticator"
     @classmethod
@@ -25,9 +24,7 @@ class Authenticator(common.Plugin):
     def __init__(self, *args, **kwargs):
         super(Authenticator, self).__init__(*args, **kwargs)
         self._httpd = None
-        redis_url = RedisUrlParser(self.conf('redis-url'))
-        self.redis_client = Redis(host=redis_url.hostname, port=redis_url.port, db=0, password=redis_url.password)
-
+        self.redis_client = StrictRedis.from_url(self.conf('redis-url'), socket_keepalive=True)
 
     def prepare(self):  # pylint: disable=missing-docstring,no-self-use
         pass  # pragma: no cover
@@ -41,7 +38,7 @@ class Authenticator(common.Plugin):
 
     def _get_key(self, achall):   # pylint: disable=missing-docstring
         key = achall.chall.path[1:].split("/")[2]
-        return key
+        return str(key)
 
     def perform(self, achalls):  # pylint: disable=missing-docstring
         responses = []
@@ -54,7 +51,7 @@ class Authenticator(common.Plugin):
         # then run simple http verification
         response, validation = achall.response_and_validation()
 
-        self.redis_client.set(self._get_key(achall), validation, 10)
+        self.redis_client.setex(self._get_key(achall), 60, validation)
         if response.simple_verify(
                 achall.chall, achall.domain,
                 achall.account_key.public_key(), self.config.http01_port):
