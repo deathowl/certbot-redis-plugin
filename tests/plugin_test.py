@@ -19,7 +19,6 @@ from certbot.tests import acme_util
 class TestAuthPlugin(object):
     validation_key = 'ZXZhR3hmQURzNnBTUmIyTEF2OUlaZjE3RHQzanV4R0orUEN0OTJ3citvQQ'
 
-    @mock.patch('redis.Redis', fakeredis.FakeRedis)
     def setup_method(self, method):
          # Setup fake redis for testing.
         self.r = fakeredis.FakeStrictRedis()
@@ -45,6 +44,7 @@ class TestAuthPlugin(object):
         self.r.flushall()
 
 
+    @mock.patch('certbot_redis.plugin.RedisCluster', fakeredis.FakeRedis)
     def test_http_challenge_gets_saved_to_redis(self):
         self.config.__setattr__(self.name_cfg + 'redis_url', "redis://test:42")
         self.config.__setattr__(self.name_cfg + 'redis_prefix', "")
@@ -56,6 +56,7 @@ class TestAuthPlugin(object):
         assert self.r.get(self.validation_key).decode("ascii") == validation
 
 
+    @mock.patch('certbot_redis.plugin.RedisCluster', fakeredis.FakeRedis)
     def test_redis_key_includes_prefix(self):
         self.config.__setattr__(self.name_cfg + 'redis_url', "redis://test:42")
         self.config.__setattr__(self.name_cfg + 'redis_prefix', "secretPrefix:")

@@ -5,7 +5,7 @@ import zope.interface
 from acme import challenges
 from certbot import interfaces
 from certbot.plugins import common
-from redis import StrictRedis
+from rediscluster import RedisCluster
 from .redisurlparser import RedisUrlParser
 
 
@@ -26,7 +26,7 @@ class Authenticator(common.Plugin):
     def __init__(self, *args, **kwargs):
         super(Authenticator, self).__init__(*args, **kwargs)
         self._httpd = None
-        self.redis_client = StrictRedis.from_url(self.conf('redis-url'), socket_keepalive=True)
+        self.redis_client = RedisCluster.from_url(self.conf('redis-url'), skip_full_coverage_check=True)
         self.redis_prefix = self.conf('redis-prefix') if self.conf('redis-prefix') else ''
 
     def prepare(self):  # pylint: disable=missing-docstring,no-self-use

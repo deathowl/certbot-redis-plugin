@@ -6,4 +6,4 @@ zope.component
 zope.event
 zope.interface
 hiredis
-redis
+redis-py-cluster

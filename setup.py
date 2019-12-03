@@ -38,7 +38,7 @@ setup(
         'zope.event',
         'zope.interface',
         'hiredis',
-        'redis',
+        'redis-py-cluster',
     ],
     include_package_data=True,
     entry_points={
