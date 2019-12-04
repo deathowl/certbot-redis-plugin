@@ -31,7 +31,7 @@ setup(
 
     install_requires=[
         'acme>=0.22.0',
-        'certbot>=0.22.0',
+        'certbot>=1.0.0',
         'PyOpenSSL',
         'setuptools',
         'zope.component',

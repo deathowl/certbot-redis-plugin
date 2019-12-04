@@ -9,10 +9,8 @@ from certbot_redis.plugin import Authenticator
 import fakeredis
 import mock
 
-from certbot import achallenges, configuration
-
-from certbot import constants
-
+from certbot import achallenges
+from certbot._internal import configuration, constants
 from certbot.tests import acme_util
 
 

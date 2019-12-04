@@ -1,5 +1,5 @@
 acme>=0.22
-certbot>=0.22
+certbot>=1.0.0
 PyOpenSSL
 setuptools
 zope.component
