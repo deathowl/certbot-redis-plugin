@@ -17,3 +17,4 @@ Installation guide:
  ``` certbot certonly -a certbot-redis:redis --certbot-redis:redis-redis-url=your_redis_server:port```
 
 * Keep in mind, that you'll need a webapplication, that reads the challenge from redis, and responds to it at .well-known/acme-challenge/{key}
+* Use `--certbot-redis:redis-redis-prefix=secretPrefix:` to prefix the Redis key with `secretPrefix:`.

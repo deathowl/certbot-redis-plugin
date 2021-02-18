@@ -5,7 +5,7 @@ import zope.interface
 from acme import challenges
 from certbot import interfaces
 from certbot.plugins import common
-from redis import StrictRedis
+from rediscluster import RedisCluster
 from .redisurlparser import RedisUrlParser
 
 
@@ -19,12 +19,15 @@ class Authenticator(common.Plugin):
     @classmethod
     def add_parser_arguments(cls, add):
         add("redis-url", default=os.getenv('REDIS_URL'),
-            help="redis-url url of the redis insteance you want to store your challenges in")
+            help="redis-url url of the redis instance you want to store your challenges in")
+        add("redis-prefix", default='',
+            help="prefix to prepend to the challenge key")
 
     def __init__(self, *args, **kwargs):
         super(Authenticator, self).__init__(*args, **kwargs)
         self._httpd = None
-        self.redis_client = StrictRedis.from_url(self.conf('redis-url'), socket_keepalive=True)
+        self.redis_client = RedisCluster.from_url(self.conf('redis-url'), skip_full_coverage_check=True)
+        self.redis_prefix = self.conf('redis-prefix') if self.conf('redis-prefix') else ''
 
     def prepare(self):  # pylint: disable=missing-docstring,no-self-use
         pass  # pragma: no cover
@@ -38,7 +41,7 @@ class Authenticator(common.Plugin):
 
     def _get_key(self, achall):   # pylint: disable=missing-docstring
         key = achall.chall.path[1:].split("/")[2]
-        return str(key)
+        return self.redis_prefix + str(key)
 
     def perform(self, achalls):  # pylint: disable=missing-docstring
         responses = []
